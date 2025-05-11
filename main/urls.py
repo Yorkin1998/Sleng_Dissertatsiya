@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import index
-from .front import check_slang
+from .updation import check_slang
 
 urlpatterns = [
 
