@@ -87,6 +87,30 @@ def find_all_slangs(text):
     found += find_multi_word_slangs(tokens)
     return found
 
+# matn = "Tg'ri ilon sichqon suvarak chayon kaltakesak deb manam eshitganman"  # Bu yerga xohlagan matningizni yozing
+# natijalar = find_all_slangs(matn)
+
+# if natijalar:
+#     is_slang = False
+#     slang_word = ""
+#     slang_meaning = ""
+#     for soz, izoh in natijalar:
+#         result = predict(matn, soz)
+#         if result["label"] == 1:
+#             is_slang = True
+#             slang_word = soz
+#             slang_meaning = izoh
+#             break  # Birinchi haqiqiy sleng topilishi bilan to‘xtaydi
+
+#     if is_slang:
+#         print("🟡 BU SLENGLIK GAP!")
+#         print(f"🔸 Sleng so‘z: {slang_word}")
+#         print(f"🔍 Izoh: {slang_meaning}")
+#     else:
+#         print("🟢 Bu oddiy gap (sleng topildi, lekin model uni slang deb belgilamadi).")
+# else:
+#     print("🟢 Bu oddiy gap (sleng topilmadi).")
+
 # Matn kiritish
 # matn = 'Darsda ustoz o‘quvchini shunaqa gap bilan chizib ketdi – hamma jim bo‘ldi.'
 # matn = "buxanka bosh bo'ganakansizde oka"
