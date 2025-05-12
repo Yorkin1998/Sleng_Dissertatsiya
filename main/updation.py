@@ -28,6 +28,7 @@ def check_slang(request):
             if prediction['label'] == 1:
                 is_slang = True
 
+            # Sleng so'z va izohni responsega qo'shamiz
             response.append({
                 "word": word,
                 "meaning": meaning,
@@ -36,8 +37,8 @@ def check_slang(request):
             })
 
         return JsonResponse({
-            "slang": is_slang,
-            "results": response
+            "slang": is_slang,  # Slenglik gapni tekshirish
+            "results": response  # Sleng va izohlar bilan natijani qaytarish
         })
 
     return JsonResponse({"error": "Faqat POST so‘rovlari qabul qilinadi."}, status=405)

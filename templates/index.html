@@ -35,11 +35,18 @@
             success: function(response) {
                 if (response.slang) {
                     // Agar sleng topilgan bo'lsa, slenglik gap ekanligini ko'rsating
+                    let html = '<ul>';
+                    response.results.forEach(item => {
+                        html += `<li><strong>${item.word}</strong> → ${item.meaning} 
+                        <br>Bashorat: ${item.label} (${item.confidence})</li><br>`;
+                    });
+                    html += '</ul>';
+
                     Swal.fire({
                         title: 'Slenglik Gap!',
-                        text: "Matnda sleng so‘zlar topildi.",
+                        html: html,  // Slenglarni va ularning izohlarini ko'rsatish
                         icon: 'success',
-                        confirmButtonText: 'Yopish'
+                        width: 600
                     });
                 } else {
                     // Agar sleng topilmasa
