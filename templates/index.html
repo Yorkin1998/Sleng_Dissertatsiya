@@ -28,26 +28,26 @@
         }
 
         $.ajax({
-            url: "/check/",
+            url: "/check/",  // Bu yerda serverdagi url ni yozish kerak
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify({text: text}),
             success: function(response) {
-                if (response.results.length === 0) {
-                    Swal.fire("Natija", "Hech qanday sleng topilmadi.", "info");
-                } else {
-                    let html = '<ul>';
-                    response.results.forEach(item => {
-                        html += `<li><strong>${item.word}</strong> → ${item.meaning} 
-                        <br>Bashorat: ${item.label} (${item.confidence})</li><br>`;
-                    });
-                    html += '</ul>';
-
+                if (response.slang) {
+                    // Agar sleng topilgan bo'lsa, slenglik gap ekanligini ko'rsating
                     Swal.fire({
-                        title: 'Topilgan slenglar:',
-                        html: html,
+                        title: 'Slenglik Gap!',
+                        text: "Matnda sleng so‘zlar topildi.",
                         icon: 'success',
-                        width: 600
+                        confirmButtonText: 'Yopish'
+                    });
+                } else {
+                    // Agar sleng topilmasa
+                    Swal.fire({
+                        title: 'Slenglik Gap Emas',
+                        text: "Matnda sleng so‘zlar topilmadi.",
+                        icon: 'info',
+                        confirmButtonText: 'Yopish'
                     });
                 }
             },
