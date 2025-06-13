@@ -28,7 +28,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": join(BASE_DIR, 'query_caches'),
+    }
+}
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [

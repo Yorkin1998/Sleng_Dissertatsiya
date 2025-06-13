@@ -4,7 +4,7 @@ import torch
 import pandas as pd
 import re
 
-uz_slang_model_name="/home/yorkin1998/Projects/iroda/uz_slang_model/content/uz_slang_model"
+uz_slang_model_name="/home/yorkin1998/Desktop/Projects/iroda/uz_slang_model/content/uz_slang_model"
 # Load the trained model
 model = AutoModelForSequenceClassification.from_pretrained(uz_slang_model_name)
 model.eval()  # Set to evaluation mode
@@ -28,7 +28,7 @@ def predict(text, word):
     return {"label": pred, "confidence": float(probs[pred])}
 
 # Excel faylni o‘qish
-df = pd.read_excel('slanglist.xlsx')
+df = pd.read_excel('/home/yorkin1998/Desktop/Projects/Sleng_Dissertatsiya/slanglist.xlsx')
 df['Sleng'] = df['Sleng'].str.lower()
 
 # 1 so'zli va ko'p so'zli slenglarni ajratish
