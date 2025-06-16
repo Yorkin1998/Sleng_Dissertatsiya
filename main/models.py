@@ -8,3 +8,11 @@ class SlangModel(models.Model):
 
     def __str__(self):
         return self.slang
+
+class SlangSentence(models.Model):
+
+    slang = models.TextField(null=True, blank=True)
+    slang_word = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.slang

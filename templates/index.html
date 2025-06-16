@@ -2,6 +2,7 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sleng tekshiruv</title>
 <!-- Bootstrap 5 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -20,6 +21,32 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
+        @media (max-width: 768px) {
+      .main-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 768px) {
+  #checkBtn {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+
+  #inputText {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .left-section, .right-section {
+    padding: 15px;
+  }
+
+  .more-news button {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}
+
     .table-responsive {
         border: 2px solid #007bff;   /* Yoqimli ko‘k border */
         border-radius: 8px;
@@ -106,40 +133,42 @@
     .more-news button:hover {
       background: #0062cc;
     }
+    #inputText {
+  min-height: 150px;
+  resize: vertical; /* foydalanuvchi yuqoriga pastga kengaytira oladi */
+  background: #f7f9fb;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 14px;
+}
   </style>
 </head>
 <body>
 
 <div class="main-container my-5">
-  <div class="left-section">
-    <h3>Sleng aniqlash tizimi</h3>
-    <textarea id="inputText" class="form-control mb-3" placeholder="Matn kiriting..."></textarea>
-    <button id="checkBtn">Tekshirish</button>
-  </div>
+  <div class="left-section p-3">
+  <h3>Sleng aniqlash tizimi</h3>
+
+  <textarea id="inputText" class="form-control mb-3 w-100" rows="20" placeholder="Matn kiriting..."></textarea>
+
+  <button id="checkBtn" class="btn btn-primary w-100">Tekshirish</button>
+</div>
 
   <div class="right-section">
-    <h5>Sleng gaplarga misollar:</h5>
-    <div class="news-item">
-      <a href="#">Talabalar uchun Data Science va sun'iy intellekt bo'yicha bepul kurs tashkil etiladi</a>
-    </div>
-    <div class="news-item">
-      <a href="#">“Ilhom – 2025” mukofoti yakuniy bosqichi ishchi guruhi o‘z faoliyatini boshladi!</a>
-    </div>
-    <div class="news-item">
-      <a href="#">“Vatan ravnaqi, tinchligi va himoyasi yo‘lidagi qahramonlik unutilmaydi” mavzusida anjuman bo‘lib o‘tdi</a>
-    </div>
-    <div class="news-item">
-      <a href="#">Respublika insholar tanlovi g‘oliblari aniqlandi</a>
-    </div>
-    <div class="more-news">
-      <button>Ko'proq slengli gap ko'rish</button>
-    </div>
+  <h5>Sleng gaplarga misollar:</h5>
+  <div id="slang-container">
+    <!-- JavaScript orqali to‘ldiriladi -->
   </div>
+  <div class="more-news">
+    <button id="load-more">Ko‘proq slengli gap ko‘rish</button>
+  </div>
+</div>
 </div>
 
 <!-- ... datatable-container ... -->
 <div class="container my-5">
-  <h4 class="mb-3 text-center text-primary">Sistemadagi slenglar Ro'yxati</h4>
+  <h4 class="mb-3 text-center text-primary">Tizimdagi slenglar ro‘yxati</h4>
   <div class="table-responsive border rounded shadow-sm p-3 bg-white"> <!-- Border va fon uchun qo'shildi -->
     <table id="slangTable" class="table table-striped table-bordered">
       <thead>
@@ -180,6 +209,72 @@
       "responsive": true
     });
   });
+</script>
+
+<script>
+  let page = 1;
+
+function loadSlangs() {
+  $.get('/ajax/load-slangs/', { page: page }, function(response) {
+    // Eski slenglar tozalanadi
+    $('#slang-container').empty();
+
+    // Yangi slenglar qo‘shiladi
+    response.data.forEach(function(item) {
+      $('#slang-container').append(`
+        <div class="news-item">
+          <a href="#" class="slang-item" data-slang="${item.slang}" data-word="${item.slang_word}">
+            ${item.slang}
+          </a>
+        </div>
+      `);
+    });
+
+    // Tugma holati
+    if (!response.has_next) {
+      $('#load-more').hide();
+    } else {
+      $('#load-more').show();
+    }
+
+    // Sahifani keyingisiga oshirish
+    page += 1;
+  });
+}
+
+// Sahifa yuklanganda 5 ta boshlang‘ich slengni yuklaymiz
+$(document).ready(function() {
+  loadSlangs();
+
+  // "Ko‘proq slengli gap ko‘rish" tugmasi bosilganda
+  $('#load-more').click(function() {
+    loadSlangs();
+  });
+});
+
+// Sleng gapga bosilganda — SweetAlert chiqarish
+$(document).on('click', '.slang-item', function(e) {
+  e.preventDefault();
+
+  let gap = $(this).data('slang');
+  let word = $(this).data('word');
+
+  if (!gap || !word) {
+    Swal.fire("Xatolik", "Sleng ma'lumotlar topilmadi.", "error");
+    return;
+  }
+
+  // Sleng so‘zini qizil bilan ajratish (har doim bosh-harf farqiga qaramasdan)
+  let highlighted = gap.replace(new RegExp(`(${word})`, 'gi'), '<span style="color:red;font-weight:bold;">$1</span>');
+
+  Swal.fire({
+    title: 'Slengli gap:',
+    html: `<p style="font-size:16px;">${highlighted}</p><hr><small>Sleng so‘z: <b>${word}</b></small>`,
+    icon: 'info',
+    confirmButtonText: 'Yopish',
+    width: 600
+  });
+});
 </script>
 
 <script>

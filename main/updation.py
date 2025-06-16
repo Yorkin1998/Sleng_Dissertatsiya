@@ -1,11 +1,13 @@
-from django.http import JsonResponse
+
+from django.core.paginator import Paginator
+from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
-from .front import find_all_slangs, predict
+from django.http import JsonResponse
+
 import json
 
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-import json
+from .front import find_all_slangs, predict
+from .models import SlangSentence
 
 @csrf_exempt
 def check_slang(request):
@@ -42,3 +44,26 @@ def check_slang(request):
         })
 
     return JsonResponse({"error": "Faqat POST so‘rovlari qabul qilinadi."}, status=405)
+
+@require_GET
+def load_more_slangs(request):
+    page = int(request.GET.get("page", 1))
+    slangs = SlangSentence.objects.filter().order_by('?')
+    paginator = Paginator(slangs, 5)  # Har safar 5 tadan
+
+    try:
+        slang_page = paginator.page(page)
+    except:
+        return JsonResponse({'data': [], 'has_next': False})
+
+    data = [
+        {
+            'slang': s.slang,
+            'slang_word': s.slang_word 
+        } for s in slang_page
+    ]
+
+    return JsonResponse({
+        'data': data,
+        'has_next': slang_page.has_next()
+    })
